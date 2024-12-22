@@ -8,12 +8,12 @@ pipeline {
         }
         stage('Run Application') {
             steps {
-                sh './venv/bin/uvicorn main:app --host 0.0.0.0 --port 8080 --reload &'
+                sh 'uvicorn main:app --host 0.0.0.0 --port 8080 --reload &'
             }
         }
         stage('Run Tests') {
             steps {
-                sh './venv/bin/pytest tests/'
+                sh 'pytest tests/'
             }
         }
     }
