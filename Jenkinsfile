@@ -1,5 +1,18 @@
 pipeline {
     agent any
+
+    triggers {
+            GenericTrigger(
+                genericVariables: [
+                    [key: 'WEBHOOK_TRIGGER', value: '$.trigger', defaultValue: '']
+                ],
+                causeString: 'Triggered by webhook',
+                token: 'push',
+                printContributedVariables: true,
+                printPostContent: true
+            )
+        }
+
     stages {
         stage('Clone Repository') {
             steps {
