@@ -1,4 +1,3 @@
-import pytest
 from fastapi.testclient import TestClient
 from api_check import app
 
@@ -52,3 +51,41 @@ def test_prime_zero():
 def test_prime_non_integer():
     response = client.post("/check_prime", json={"value": "abc"})
     assert response.status_code == 422
+
+if __name__ == "__main__":
+    print("Running tests...")
+    
+    try:
+        test_get_version()
+        print("test_get_version passed")
+        
+        test_prime_1()
+        print("test_prime_1 passed")
+        
+        test_prime_2()
+        print("test_prime_2 passed")
+        
+        test_prime_3()
+        print("test_prime_3 passed")
+        
+        test_prime_4()
+        print("test_prime_4 passed")
+        
+        test_prime_29()
+        print("test_prime_29 passed")
+        
+        test_prime_negative()
+        print("test_prime_negative passed")
+        
+        test_prime_large()
+        print("test_prime_large passed")
+        
+        test_prime_zero()
+        print("test_prime_zero passed")
+        
+        test_prime_non_integer()
+        print("test_prime_non_integer passed")
+        
+        print("All tests passed successfully!")
+    except AssertionError as e:
+        print(f"Test failed: {e}")
