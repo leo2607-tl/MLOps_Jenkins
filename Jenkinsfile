@@ -50,7 +50,7 @@ pipeline {
         }
         stage('Run Tests') {
             steps {
-                sh 'python test_main.py'
+                sh 'python3 test_main.py'
             }
         }
     }
