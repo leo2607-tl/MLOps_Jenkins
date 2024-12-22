@@ -6,9 +6,46 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/leo2607-tl/MLOps_Jenkins.git'
             }
         }
-        stage('Run Application') {
+        stage('Run FastAPI Application') {
             steps {
-                sh 'python api_check.py'
+                script {
+                    try {
+                        sh '''
+                        #!/bin/bash
+
+                        # Check if the container already exists
+                        if docker ps -a --format '{{.Names}}' | grep -q "^api_running$"; then
+                            echo "Container 'api_running' already exists. Removing it..."
+                            docker stop api_running
+                            docker rm -f api_running
+                        fi
+
+                        # Remove existing Docker image
+                        if docker images | grep -q "api"; then
+                            echo "Removing existing Docker image..."
+                            docker rmi -f api
+                        fi
+
+                        # Build and run the FastAPI container
+                        echo "Building the Docker image..."
+                        docker build -t api .
+
+                        echo "Running the Docker container..."
+                        docker run --name api_running -p 8000:8000 -d api
+                        '''
+
+                        withChecks('Run FastAPI App') {
+                            publishChecks name: 'Run FastAPI App', status: 'COMPLETED', conclusion: 'SUCCESS',
+                                         summary: 'FastAPI container built and running successfully.'
+                        }
+                    } catch (e) {
+                        withChecks('Run FastAPI App') {
+                            publishChecks name: 'Run FastAPI App', status: 'COMPLETED', conclusion: 'FAILURE',
+                                         summary: 'Pipeline failed while running the FastAPI container.'
+                        }
+                        throw e
+                    }
+                }
             }
         }
         stage('Run Tests') {
