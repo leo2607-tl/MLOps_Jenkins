@@ -50,7 +50,7 @@ pipeline {
         }
         stage('Run Tests') {
             steps {
-                sh 'python test_main.py'
+                sh 'conda activate base && python test_main.py'
             }
         }
     }
